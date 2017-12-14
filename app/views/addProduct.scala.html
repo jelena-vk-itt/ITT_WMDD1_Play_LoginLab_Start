@@ -1,0 +1,39 @@
+@(productForm: Form[models.Product])
+
+@import helper._
+
+
+@main("Add product") {
+    <p class="lead">Add or update a product</p>
+
+    <!-- Use the views.html.helpers package to create the form -->
+    @form(action=routes.HomeController.addProductSubmit(), 'class -> "form-horizontal", 'role -> "form") {
+        @* CSRF attack prevention *@
+        @* This token, send by the controller, will be used to authenticate the form submission *@
+        @CSRF.formField
+
+        <!-- Build the form, adding an input for each field --> 
+        <!-- Note the label parameter -->
+        @inputText(productForm("name"), '_label -> "Name", 'class -> "form-control")
+        @inputText(productForm("description"), '_label -> "Description", 'class -> "form-control")
+        @select(
+            productForm("category.id"),
+            options(Category.options),
+            '_label -> "Category", '_default -> "-- Choose a category --", 
+            '_showConstraints -> false, 'class -> "form-control"
+        )
+        @inputText(productForm("stock"), '_label -> "Stock", 'class -> "form-control")
+        @inputText(productForm("price"), '_label -> "Price", 'class -> "form-control")
+
+        <!-- Hidden ID field - required for updates -->
+        @inputText(productForm("id"), '_label -> "", 'hidden -> "hidden")
+    
+        <!-- Add a submit button -->
+        <div class="actions">
+            <input type="submit" value="Add/Update Product" class="btn btn-primary">
+            <a href="@routes.HomeController.index(0)">
+                <button type="button" class="btn btn-warning">Cancel</button>
+            </a>
+        </div>
+    } @* End of form *@
+} @* End of page content *@
